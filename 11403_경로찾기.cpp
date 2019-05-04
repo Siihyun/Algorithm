@@ -33,23 +33,21 @@ public:
 		for (int i = 0; i < N; i++)
 			sort(adj[i].begin(), adj[i].end());
 	}
-	void dfs(int start,int cur) {
+	void dfs(int start, int cur) {
 		if (visited[cur])
 			return;
 		visited[cur] = true;
-		//printf("%d is visited\n", cur);
-		//isThereRoad.push_back(cur);
 		for (int i = 0; i < size; i++) {
-			if(adj[cur][i])
+			if(adj[cur][i]) {
 				arr[start][i] = 1;
-			if (adj[cur][i] && !visited[i]) {
-				dfs(start,i);
+				if(!visited[i])
+					dfs(start, i);
 			}
 		}
 	}
 };
 int main() {
-	int N,road;
+	int N, road;
 	cin >> N;
 	Graph graph(N);
 	for (int i = 0; i < N; i++) {
@@ -58,7 +56,6 @@ int main() {
 			graph.adj[i].push_back(road);
 		}
 	}
-	//graph.sortList(N);
 	for (int i = 0; i < N; i++) {
 		graph.dfs(i, i);
 		graph.setVisited(N);

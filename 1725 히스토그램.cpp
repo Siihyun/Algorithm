@@ -1,57 +1,68 @@
 #include<iostream>
-#include<stack>
 using namespace std;
-typedef struct{
-	long long int num;
-	int idx;
-}His;
-int main(){
-	int N;
-	stack<His> s;
-	His a,tmp;
-	His standard;
-	long long int Max = 0;
-	cin>>N;
-	
-	for(int i = 1 ; i <= N ; i++){
-		cin>>a.num;
-		a.idx = i; // standard element
-		if(!s.empty()){
-			tmp = s.top();
-			while(tmp.num >= a.num && !s.empty()){
-				s.pop();
-				if(s.empty())
-					tmp.idx = 1;
-			//	printf("pop %d\n",tmp.num);
-				long long int sqr = tmp.num * (i-tmp.idx);
-		//		printf(" sqr = %d * %d = %d\n",tmp.num, i-tmp.idx,tmp.num * (i-tmp.idx));
-				if(Max < sqr){
-					Max = sqr;
-					}
-				if(!s.empty())
-					tmp = s.top();
-				}
-			}
-		s.push(a);
-		//printf("push %d\n",a.num);
+int n,A[100001];
+int get_ans(int left,int right){
+	int small,large,M=0,height,mid_sum,left_sum,right_sum,left_idx,right_idx,length=2;
+	int mid = (left+right)/2;
+	if(left == right)	
+		return A[left];
+	if(right-left == 1){
+		small = min(A[right],A[left]);
+		large = max(A[right],A[left]);
+		return max(small*2,large);
 	}
-		
-	while(!s.empty()){
-		tmp = s.top();
-		long long int test;
-		s.pop();
-		//printf("pop %d\n",tmp.num);
-		if(s.empty()){
-			test = tmp.num * N;
-		//	printf("1test = %d * %d = %d\n",tmp.num,N,tmp.num*N);
+	left_sum = get_ans(left,mid);
+	right_sum = get_ans(mid+1,right);
+	mid_sum = A[mid];
+	
+	left_idx = mid-1; right_idx = mid+1; height = A[mid];
+	
+	while(1){
+		if(left_idx < left || right_idx > right)
+			break;
+		if(A[left_idx] >= A[right_idx]){
+			if(A[left_idx]<height)
+				height = A[left_idx];
+			mid_sum = height*length;
+			left_idx--;
 		}
 		else{
-			test = tmp.num * (N-s.top().idx);
-		//	printf("test = %d * %d = %d\n",tmp.num,N-s.top().idx,tmp.num * (N-s.top().idx));
+			if(A[right_idx]<height)
+				height = A[right_idx];
+			mid_sum = height * length;
+			right_idx++;
 		}
-		if(Max< test)
-			Max = test;
-		}
+		if(M < mid_sum)
+			M = mid_sum;
+		length++;
+	}
+	
+	
+	while(left_idx >= left){
+		if(A[left_idx]<height)
+			height = A[left_idx];
+		mid_sum = height*length;	
+		left_idx--;
 		
-	cout<<Max<<endl;
+		if(M < mid_sum)
+			M = mid_sum;
+		length++;
+	}
+	while(right_idx <= right){
+		if(A[right_idx]<height)
+			height = A[right_idx];
+		mid_sum = height * length;
+		right_idx++;
+		
+		if(M < mid_sum)
+			M = mid_sum;
+		length++;
+	}
+	return max(max(left_sum,right_sum),M);
+}
+int main(){
+	cin>>n;
+	for(int i = 0 ; i < n ; i++)
+		cin>>A[i];
+	cout<<get_ans(0,n-1)<<endl;
 }

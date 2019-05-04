@@ -43,9 +43,10 @@ void input() { // make array
 	scanf("%d %d", &c, &r);
 	for (int i = 0; i < r; i++)
 		fill_n(visited[i], c, 0);
+	getchar();
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
-			scanf(" %c", &arr[i][j]);
+			scanf("%c", &arr[i][j]);
 			if (arr[i][j] == '@') {
 				point.push(make_pair(i, j));
 				visited[i][j] = 1;

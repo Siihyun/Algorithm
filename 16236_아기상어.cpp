@@ -11,9 +11,9 @@ typedef pair<int, int> p;
 
 p shark;
 int arr[20][20];
-int dx[4] = { -1,1,0,0 };
-int dy[4] = { 0,0,-1,1 };
-int N, depth, cnt;
+int dx[4] = {-1,1,0,0};
+int dy[4] = {0,0,-1,1};
+int N, depth,cnt;
 int shark_size = 2;
 int check = 2;
 p fail(-1, -1);

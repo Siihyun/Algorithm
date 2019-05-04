@@ -7,15 +7,7 @@
 #include <string.h>
 #include <vector>
 #include <functional>
-/*===================================================================*/
-/* 두가지 경우 있음                                                  */
-/* 1. 다음으로 갈 좌표가 벽이고 벽이 뚫린적이 없는경우               */
-/* 2. 다음으로 갈 좌표가 벽이 아니고 와보지 않은 경우                */
-/* 두번 지날 수 있는 점은 한가지 경우                                */
-/* 처음 그 점을 지날때는 벽을 뚫은 경로였고,                         */
-/* 새로 지날때는 벽을 안뚫은 경로를 찾았을 때 뿐                     */
-/* 결국 벽이 있던 벽이 없던, 그 각각의 경로에서의 두번 접근은 안됨.  */
-/*================================================================== */
+
 #define MAX 1001
 #define INF 0x7fffffff
 using namespace std;
@@ -24,43 +16,56 @@ int visited[MAX][MAX][2];
 int r, c;
 int dx[4] = { -1,1,0,0 };
 int dy[4] = { 0,0,-1,1 };
-typedef struct POINT {
-	int x;
-	int y;
-	bool wall;
-	POINT(int a, int b, bool c) {
-		x = a; y = b; wall = c;
-	}
-}p;
+typedef pair<int, int> p;
 queue<p> q;
-
+void show_map() {
+	printf("\n\n");
+	for (int i = 0; i < r; i++) {
+		for (int j = 0; j < c; j++)
+			printf("%d ", visited[i][j]);
+		printf("\n");
+	}
+	printf("\n\n");
+}
 int main() {
 	int nx, ny;
+	printf("%d\n", sizeof(nx));
 	cin >> r >> c;
 	for (int i = 0; i < r; i++)
 		scanf("%s", arr[i]);
-	q.push(p(0, 0, true));
-	visited[0][0][1] = 1; // 0,0,벽뚫기 가능
+	q.push(make_pair(0, 0));
+	visited[0][0][0] = 1;
 	while (!q.empty()) {
 		p cur = q.front();
-		if (cur.x == r - 1 && cur.y == c - 1) {
-			printf("%d\n", visited[cur.x][cur.y][cur.wall]);
+		if (cur.first == r - 1 && cur.second == c - 1) {
+			printf("%d\n", min(visited[cur.first][cur.second][0], visited[cur.first][cur.second][1]));
 			return 0;
 		}
 		q.pop();
 		for (int i = 0; i < 4; i++) {
-			nx = cur.x + dx[i];
-			ny = cur.y + dy[i];
+			nx = cur.first + dx[i];
+			ny = cur.first + dy[i];
 			if (nx < 0 || ny < 0 || nx >= r || ny >= c) continue;
-			if (arr[nx][ny] == '1' && cur.wall && visited[nx][ny][cur.wall-1]==0) { // 벽을 뚫을수 있고 그 벽이 뚫린적이 없으면 push
-				visited[nx][ny][cur.wall-1] = visited[cur.x][cur.y][cur.wall] + 1;
-				q.push(p(nx, ny, false));
+			if (visited[nx][ny][0] == 0) {
+				if (arr[nx][ny] == '1' && cur.wall) {
+					visited[nx][ny] = visited[cur.x][cur.y] + 1;
+					q.push(p(nx, ny, false));
+				}
+				else if (arr[nx][ny] == '0') {
+					visited[nx][ny] = visited[cur.x][cur.y] + 1;
+					if (cur.wall) trace[nx][ny] = true;
+					q.push(p(nx, ny, cur.wall));
+				}
 			}
-			else if (arr[nx][ny] == '0' && visited[nx][ny][cur.wall]==0) { //벽이 아니고 방문한 적이 아니라면 push
-				visited[nx][ny][cur.wall] = visited[cur.x][cur.y][cur.wall] + 1;
-				q.push(p(nx, ny, cur.wall));
+			else { // 벽을 부술수 있을때만 기회줌
+				if (!cur.wall || arr[nx][ny] == '1') continue;
+				if (trace[nx][ny]) continue;
+				if (nx == ex.x && ny == ex.y) continue;
+				visited[nx][ny] = visited[cur.x][cur.y] + 1;
+				q.push(p(nx, ny, true));
 			}
 		}
+		ex.x = cur.x; ex.y = cur.y;
 	}
 	printf("-1\n");
 }

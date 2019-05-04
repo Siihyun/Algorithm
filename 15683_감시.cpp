@@ -3,10 +3,7 @@
 #include<algorithm>
 #include<utility>
 using namespace std;
-//dir 0 ->
-//dir 1 <-
-//dir 3 À§
-//dir 4 ¾Æ·¡
+
 int dir[8];
 int x[8];
 int y[8];
@@ -253,7 +250,4 @@ int main() {
 	}
 	dfs(0);
 	cout << ans << endl;
-	for (int i = 0; i < cctv_num; i++) {
-		printf("dir[%d] = %d\n", i,dir[i]);
-	}
 }

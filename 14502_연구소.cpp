@@ -25,6 +25,8 @@ void copy_array() {
 }
 int bfs() {
 	queue<p> q;
+	int visited[MAX][MAX];
+	memset(visited, 0, sizeof(visited));
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
 			if (cmp[i][j] == 2)
@@ -32,16 +34,18 @@ int bfs() {
 		}
 	}
 
-	while (!q.empty()) {
+	while(!q.empty()){
 		p cur = q.front();
 		q.pop();
 		for (int i = 0; i < 4; i++) {
 			int nx = cur.first + dx[i];
 			int ny = cur.second + dy[i];
 			if (nx < 0 || ny < 0 || nx >= r || ny >= c) continue;
+			if (visited[nx][ny]) continue;
 			if (cmp[nx][ny] == 0) {
 				cmp[nx][ny] = 2;
 				q.push(make_pair(nx, ny));
+				visited[nx][ny] = true;
 			}
 		}
 	}
@@ -57,7 +61,7 @@ int main() {
 
 	memset(arr, 0, sizeof(arr));
 	scanf("%d %d", &r, &c);
-
+	
 	for (int i = 0; i < r; i++)
 		for (int j = 0; j < c; j++)
 			scanf("%d", &arr[i][j]);

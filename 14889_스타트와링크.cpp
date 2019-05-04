@@ -20,9 +20,9 @@ int get_score(int idx) { // 팀의 점수를 구해주는 함수
 	}
 	return score;
 }
-void dfs(int depth,int left) {
+void dfs(int depth, int idx) {
 	if (flag) return; // 0인 정답이 나왔으면 최소이므로 return
-	if (left == 0) { // 정점 0을 이미 넣고 시작해서  N/2 - 1 까지입니다
+	if (depth == N / 2 - 1) { // 정점 0을 이미 넣고 시작해서  N/2 - 1 까지입니다
 		int cnt1 = 0, cnt2 = 0;
 		for (int i = 0; i < N; i++) {
 			if (visited[i]) team[0][cnt1++] = i; // start 팀
@@ -33,12 +33,14 @@ void dfs(int depth,int left) {
 		if (abs(t1 - t2) < m) m = abs(t1 - t2); // m 갱신
 		if (m == 0) flag = 1; // 0이 나오면 flag = 1
 	}
-	if (depth >= N)return;
 
-	visited[depth] = true;
-	dfs(depth + 1, left - 1);
-	visited[depth] = false;
-	dfs(depth + 1, left);
+	for (int i = idx; i < N; i++) { // 팀 구하는 dfs
+		if (i == idx) continue;
+		if (visited[i]) continue;
+		visited[i] = true;
+		dfs(depth + 1, i);
+		visited[i] = false;
+	}
 }
 int main() {
 	cin >> N;
@@ -46,6 +48,7 @@ int main() {
 		for (int j = 0; j < N; j++)
 			scanf("%d", &arr[i][j]);
 
-	dfs(0, N / 2);
+	visited[0] = true;
+	dfs(0, 0);
 	cout << m << endl;
 }
